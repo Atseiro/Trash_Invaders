@@ -168,6 +168,15 @@ function draw() {
     if (!gameRunning) return;
 
     ctxGame.clearRect(0, 0, gameWidth, gameHeight);
+
+    // Dessiner l'image de fond
+    const backgroundImage = new Image();
+    backgroundImage.src = 'assets/background.jpeg';
+
+    backgroundImage.onload = () => {
+        ctxGame.drawImage(backgroundImage, 0, 0, gameWidth, gameHeight);
+    };
+
     drawTrash();
     drawPlayer();
     drawShots();
