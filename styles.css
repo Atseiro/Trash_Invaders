@@ -49,10 +49,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-right: 20px;
 }
 
 #characterImage {
-    width: 200px;
+    width: 300px; /* Agrandir le personnage */
     height: auto;
 }
 
@@ -72,7 +73,7 @@ body {
     content: '';
     position: absolute;
     bottom: -10px;
-    left: 20px;
+    left: -20px; /* Ajustez pour pointer vers le personnage */
     border-width: 10px;
     border-style: solid;
     border-color: transparent white transparent transparent;
