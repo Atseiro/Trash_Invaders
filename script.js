@@ -1,3 +1,4 @@
+
 // 🎮 Sélection des éléments HTML
 const menu = document.getElementById('menu');
 const intro = document.getElementById('intro');
@@ -40,6 +41,22 @@ const trash = {
     color: 'green'
 };
 
+// 🔄 Images possibles pour les déchets
+const trashImages = [
+    'assets/Bouteille.png',
+    'assets/Canette.png',
+    'assets/Sac.png'
+];
+
+let trashImage = new Image();
+trashImage.src = trashImages[Math.floor(Math.random() * trashImages.length)];
+
+// 🔄 Change l’image du déchet
+function resetTrashImage() {
+    trashImage = new Image();
+    trashImage.src = trashImages[Math.floor(Math.random() * trashImages.length)];
+}
+
 // 🔫 Tableau des tirs
 const shots = [];
 
@@ -69,7 +86,6 @@ startButton.addEventListener('click', () => {
     intro.style.display = 'flex'; // Afficher l'intro
     showDialogue();
 
-    // 🎶 Jouer la musique après interaction utilisateur
     backgroundMusic.volume = 0.5;
     backgroundMusic.play().then(() => {
         console.log("🎵 Musique jouée avec succès !");
@@ -78,7 +94,6 @@ startButton.addEventListener('click', () => {
     });
 });
 
-// 🎬 Afficher les dialogues d'intro
 nextButton.addEventListener('click', () => {
     dialogueIndex++;
     if (dialogueIndex < dialogue.length) {
@@ -100,7 +115,7 @@ function drawPlayer() {
     ctxGame.fillRect(player.x, player.y, player.width, player.height);
 }
 
-// 🗑️ Dessiner le déchet
+// 🖼️ Dessiner le déchet
 function drawTrash() {
     if (trashImage.complete) {
         ctxGame.drawImage(trashImage, trash.x, trash.y, trash.width, trash.height);
@@ -110,8 +125,6 @@ function drawTrash() {
         };
     }
 }
-const trashImage = new Image();
-trashImage.src = 'assets/Bouteille.png'; 
 
 // 🔫 Dessiner les tirs
 function drawShots() {
@@ -120,7 +133,6 @@ function drawShots() {
         ctxGame.fillRect(shot.x, shot.y, 5, 10);
         shot.y -= 3;
 
-        // 🎯 Vérification des collisions avec le déchet
         if (shot.y <= trash.y + trash.height &&
             shot.y >= trash.y &&
             shot.x >= trash.x &&
@@ -129,9 +141,9 @@ function drawShots() {
             trash.y = 0;
             trash.x = Math.random() * (gameWidth - trash.width);
             shots.splice(index, 1);
+            resetTrashImage();
         }
 
-        // Suppression des tirs hors écran
         if (shot.y < 0) shots.splice(index, 1);
     });
 }
@@ -143,6 +155,7 @@ function updateTrash() {
         trash.y = 0;
         trash.x = Math.random() * (gameWidth - trash.width);
         lives--;
+        resetTrashImage();
         if (lives === 0) {
             alert(`Game Over! Final Score: ${score}`);
             resetGame();
@@ -162,7 +175,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key === ' ' && canShoot) {
         shots.push({ x: player.x + player.width / 2 - 2.5, y: player.y });
         canShoot = false;
-        setTimeout(() => canShoot = true, 500); // Délai de tir augmenté
+        setTimeout(() => canShoot = true, 500);
     }
 });
 
@@ -170,16 +183,14 @@ document.addEventListener('keyup', (event) => {
     if (event.key in keys) keys[event.key] = false;
 });
 
-// 🔄 Boucle du jeu (mise à jour continue)
+// 🔄 Boucle du jeu
 function draw() {
     if (!gameRunning) return;
 
     ctxGame.clearRect(0, 0, gameWidth, gameHeight);
 
-    // Dessiner l'image de fond
     const backgroundImage = new Image();
     backgroundImage.src = 'assets/background.jpeg';
-
     backgroundImage.onload = () => {
         ctxGame.drawImage(backgroundImage, 0, 0, gameWidth, gameHeight);
     };
@@ -190,7 +201,6 @@ function draw() {
     updateTrash();
     updatePlayer();
 
-    // Affichage du score et des vies
     ctxGame.fillStyle = 'black';
     ctxGame.font = '20px Arial';
     ctxGame.fillText(`Score: ${score}`, 10, 30);
@@ -199,7 +209,6 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-// 🎮 Démarrer le jeu
 function startGame() {
     score = 0;
     lives = 3;
@@ -207,12 +216,8 @@ function startGame() {
     draw();
 }
 
-// 🔄 Réinitialiser le jeu
 function resetGame() {
     gameRunning = false;
     gameCanvas.style.display = 'none';
     menu.style.display = 'flex';
 }
-
-
- 
