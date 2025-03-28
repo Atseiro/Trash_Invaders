@@ -11,7 +11,7 @@
     <div id="menu">
         <h1>Trash Invaders</h1>
         <button id="startButton">Start Game</button>
-        <audio id="menuMusic" src="music.mp3" loop></audio>
+        <audio id="menuMusic" src="assets/Trash_Invalideras.mp3" loop></audio>
     </div>
 
     <!-- Introduction -->
@@ -21,8 +21,14 @@
         </div>
         <button id="nextButton">Next</button>
     </div>
+    
+    <!-- Audio du jeu -->
+    <audio id="backgroundMusic" loop>
+        <source src="assets/Trash_Invalideras.mp3" type="audio/mpeg">
+        Votre navigateur ne supporte pas l'élément audio.
+    </audio>
 
-    <!-- Canvas du jeu (caché au départ) -->
+    <!-- Canvas du jeu -->
     <canvas id="gameCanvas"></canvas>
 
     <script src="script.js"></script>
