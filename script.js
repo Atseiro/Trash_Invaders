@@ -92,6 +92,12 @@ nextButton.addEventListener('click', () => {
 
 function showDialogue() {
     dialogueText.textContent = dialogue[dialogueIndex];
+    const audio = document.getElementById(`dialogueAudio${dialogueIndex + 1}`);
+    if (audio) {
+        audio.play().catch(error => {
+            console.log("Erreur lors de la lecture de l'audio :", error);
+        });
+    }
 }
 
 // 🎯 Dessiner le joueur

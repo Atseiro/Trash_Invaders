@@ -32,19 +32,50 @@ body {
     transform: translate(-50%, -50%);
     text-align: center;
     display: none; /* Caché au début */
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
 }
 
 /* Style du dialogue */
 #dialogueBox {
-    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px;
+}
+
+#characterBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#characterImage {
+    width: 200px;
+    height: auto;
+}
+
+.speech-bubble {
+    position: relative;
+    background: white;
     border: 2px solid black;
+    border-radius: 10px;
     padding: 20px;
     width: 60%;
-    max-width: 600px;
+    max-width: 400px;
     text-align: center;
     margin-bottom: 20px;
+}
+
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 20px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent white transparent transparent;
 }
 
 /* Cacher le canvas au départ */
