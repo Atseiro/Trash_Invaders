@@ -1,13 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trash Invaders</title>
-    <link rel="stylesheet" href="styles.css">
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Trash Invaders</title>
+ <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <script src="script.js"></script>
+ <audio id="menuMusic" loop>
+     <source src="assests/Trash Invalideras.mp3" type="audio/mpeg">
+ </audio>
+
+ <div id="menu">
+     <h1>Trash Invaders</h1>
+     <button id="startButton">Start Game</button>
+ </div>
+
+ <div id="intro" style="display: none;">
+     <div id="dialogueBox">
+         <p id="dialogueText"></p>
+     </div>
+     <canvas id="introCanvas" width="800" height="600"></canvas>
+     <button id="nextButton">Next</button>
+ </div>
+
+ <canvas id="gameCanvas" width="800" height="600" style="display: none;"></canvas>
+ <script src="script.js"></script>
 </body>
 </html>

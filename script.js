@@ -1,14 +1,25 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+const menu = document.getElementById('menu');
+const intro = document.getElementById('intro');
+const gameCanvas = document.getElementById('gameCanvas');
+const introCanvas = document.getElementById('introCanvas');
+const startButton = document.getElementById('startButton');
+const nextButton = document.getElementById('nextButton');
+const dialogueText = document.getElementById('dialogueText');
+const menuMusic = document.getElementById('menuMusic');
+
+const ctxGame = gameCanvas.getContext('2d');
+const ctxIntro = introCanvas.getContext('2d');
 
 let score = 0;
 let lives = 3;
 let gameTime = 0;
-const maxSpeed = 10; // Vitesse maximale
-const gameDuration = 3 * 60 * 60; // 3 minutes en frames (60 frames par seconde)
+const gameDuration = 3 * 60 * 60;
+
+gameCanvas.width = 800;
+gameCanvas.height = 600;
 
 const trash = {
-    x: Math.random() * (canvas.width - 50),
+    x: Math.random() * (gameCanvas.width - 100),
     y: 0,
     width: 50,
     height: 50,
@@ -17,8 +28,8 @@ const trash = {
 };
 
 const player = {
-    x: canvas.width / 2,
-    y: canvas.height - 50,
+    x: gameCanvas.width / 2,
+    y: gameCanvas.height - 50,
     width: 50,
     height: 20,
     color: 'purple',
@@ -26,135 +37,144 @@ const player = {
 };
 
 const shots = [];
-const keys = {
-    ArrowLeft: false,
-    ArrowRight: false,
-    ' ': false
-};
+const keys = { ArrowLeft: false, ArrowRight: false };
+const goodItems = [{ x: Math.random() * (gameCanvas.width - 100), y: 0, width: 50, height: 50, speed: 2, color: 'blue' }];
+let canShoot = true;
 
-const goodItems = [{
-    x: Math.random() * (canvas.width - 50),
-    y: 0,
-    width: 50,
-    height: 50,
-    speed: 2,
-    color: 'blue'
-}];
+const dialogue = [
+    "Welcome to Trash Invaders!",
+    "Your mission is to clean up the trash.",
+    "Use the arrow keys to move.",
+    "Press space to shoot.",
+    "Good luck and have fun!"
+];
+
+let dialogueIndex = 0;
+
+// Play music when the user clicks "Start"
+startButton.addEventListener('click', () => {
+    menuMusic.volume = 0.5;
+    menuMusic.play().catch(error => console.log("Music autoplay blocked:", error));
+    menu.style.display = 'none';
+    intro.style.display = 'block';
+    showDialogue();
+});
+
+nextButton.addEventListener('click', () => {
+    dialogueIndex++;
+    if (dialogueIndex < dialogue.length) {
+        showDialogue();
+    } else {
+        intro.style.display = 'none';
+        gameCanvas.style.display = 'block';
+        startGame();
+    }
+});
+
+function showDialogue() {
+    dialogueText.textContent = dialogue[dialogueIndex];
+}
 
 function drawTrash(item) {
-    ctx.fillStyle = item.color;
-    ctx.fillRect(item.x, item.y, item.width, item.height);
+    ctxGame.fillStyle = item.color;
+    ctxGame.fillRect(item.x, item.y, item.width, item.height);
 }
 
 function updateTrash(item) {
     item.y += item.speed;
-    if (item.y > canvas.height) {
+    if (item.y > gameCanvas.height) {
         item.y = 0;
-        item.x = Math.random() * (canvas.width - 50);
-        if (item === trash) {
-            lives--;
-        }
+        item.x = Math.random() * (gameCanvas.width - 100);
+        if (item === trash) lives--;
     }
 }
 
 function drawPlayer() {
-    ctx.fillStyle = player.color;
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    ctxGame.fillStyle = player.color;
+    ctxGame.fillRect(player.x, player.y, player.width, player.height);
 }
 
 function drawShots() {
-    ctx.fillStyle = 'red';
+    ctxGame.fillStyle = 'red';
     shots.forEach((shot, index) => {
-        ctx.fillRect(shot.x, shot.y, 5, 10);
+        ctxGame.fillRect(shot.x, shot.y, 5, 10);
         shot.y -= shot.speed;
 
-        // Vérifier les collisions avec les déchets
-        if (shot.y <= trash.y + trash.height &&
-            shot.y >= trash.y &&
-            shot.x >= trash.x &&
-            shot.x <= trash.x + trash.width) {
-            score += 10; // Augmenter le score
+        if (shot.y <= trash.y + trash.height && shot.y >= trash.y && shot.x >= trash.x && shot.x <= trash.x + trash.width) {
+            score += 10;
+            hitEffect(trash);
             trash.y = 0;
-            trash.x = Math.random() * (canvas.width - 50);
+            trash.x = Math.random() * (gameCanvas.width - 100);
             shots.splice(index, 1);
         }
 
-        // Vérifier les collisions avec les bons items
         goodItems.forEach(item => {
-            if (shot.y <= item.y + item.height &&
-                shot.y >= item.y &&
-                shot.x >= item.x &&
-                shot.x <= item.x + item.width) {
-                score -= 5; // Diminuer le score
+            if (shot.y <= item.y + item.height && shot.y >= item.y && shot.x >= item.x && shot.x <= item.x + item.width) {
+                score -= 5;
                 item.y = 0;
-                item.x = Math.random() * (canvas.width - 50);
+                item.x = Math.random() * (gameCanvas.width - 100);
                 shots.splice(index, 1);
             }
         });
 
-        if (shot.y < 0) {
-            shots.splice(index, 1);
-        }
+        if (shot.y < 0) shots.splice(index, 1);
     });
 }
 
+function hitEffect(item) {
+    let originalColor = item.color;
+    item.color = 'red';
+    setTimeout(() => item.color = originalColor, 200);
+}
+
 function updatePlayer() {
-    if (keys.ArrowLeft && player.x > 0) {
-        player.x -= player.speed;
-    }
-    if (keys.ArrowRight && player.x < canvas.width - player.width) {
-        player.x += player.speed;
-    }
+    if (keys.ArrowLeft && player.x > 0) player.x -= player.speed;
+    if (keys.ArrowRight && player.x < gameCanvas.width - player.width) player.x += player.speed;
 }
 
-function shoot() {
-    if (keys[' ']) {
-        shots.push({ x: player.x + player.width / 2, y: player.y, speed: 5 });
-        keys[' '] = false;
-    }
-}
-
+// Fix shooting issue
 document.addEventListener('keydown', (event) => {
-    if (event.key in keys) {
-        keys[event.key] = true;
+    if (event.key in keys) keys[event.key] = true;
+    if (event.key === ' ' && canShoot) {
+        shoot();
+        canShoot = false;
+        setTimeout(() => canShoot = true, 300);
     }
 });
 
 document.addEventListener('keyup', (event) => {
-    if (event.key in keys) {
-        keys[event.key] = false;
-    }
+    if (event.key in keys) keys[event.key] = false;
 });
 
+function shoot() {
+    shots.push({ x: player.x + player.width / 2, y: player.y, speed: 5 });
+}
+
 function draw() {
-    if (gameTime >= gameDuration) {
-        alert(`Game Over! Your score is: ${score}`);
+    if (lives <= 0) {
+        alert(`Game Over! Final Score: ${score}`);
         return;
     }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctxGame.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
     drawTrash(trash);
-    goodItems.forEach(item => drawTrash(item));
+    goodItems.forEach(drawTrash);
     drawPlayer();
     drawShots();
     updateTrash(trash);
-    goodItems.forEach(item => updateTrash(item));
+    goodItems.forEach(updateTrash);
     updatePlayer();
-    shoot();
 
-    // Augmenter la vitesse des objets au fil du temps
-    gameTime++;
-    if (gameTime % 120 === 0 && trash.speed < maxSpeed) { // Augmenter la vitesse toutes les 120 frames
-        trash.speed += 0.1;
-        goodItems.forEach(item => item.speed += 0.1);
-    }
-
-    // Afficher le score
-    ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.fillText(`Score: ${score}`, 10, 30);
+    ctxGame.fillStyle = 'black';
+    ctxGame.font = '20px Arial';
+    ctxGame.fillText(`Score: ${score}`, 10, 30);
+    ctxGame.fillText(`Lives: ${lives}`, 700, 30);
 
     requestAnimationFrame(draw);
 }
 
-draw();
+function startGame() {
+    lives = 3;
+    score = 0;
+    draw();
+}
