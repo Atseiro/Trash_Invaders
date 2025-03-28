@@ -10,6 +10,8 @@ body {
     background-position: center;
     font-family: Arial, sans-serif;
     text-align: center;
+    overflow: hidden;
+
 }
 
 /* Menu principal centré */

@@ -46,7 +46,11 @@ const trash = {
 const trashImages = [
     'assets/Bouteille.png',
     'assets/Canette.png',
-    'assets/Sac.png'
+    'assets/Sac.png',
+    'assets/Electro.png',
+    'assets/Electro2.png',
+    'assets/Dechets.png'
+
 ];
 
 let trashImage = new Image();
