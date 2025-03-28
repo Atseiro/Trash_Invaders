@@ -32,10 +32,10 @@ const player = {
 
 // 🗑️ Déchet (ennemi)
 const trash = {
-    x: Math.random() * (gameWidth - 50),
+    x: Math.random() * (gameWidth - 100),
     y: 0,
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 120,
     speed: 1.5,
     color: 'green'
 };
@@ -92,12 +92,6 @@ nextButton.addEventListener('click', () => {
 
 function showDialogue() {
     dialogueText.textContent = dialogue[dialogueIndex];
-    const audio = document.getElementById(`dialogueAudio${dialogueIndex + 1}`);
-    if (audio) {
-        audio.play().catch(error => {
-            console.log("Erreur lors de la lecture de l'audio :", error);
-        });
-    }
 }
 
 // 🎯 Dessiner le joueur
@@ -108,9 +102,16 @@ function drawPlayer() {
 
 // 🗑️ Dessiner le déchet
 function drawTrash() {
-    ctxGame.fillStyle = trash.color;
-    ctxGame.fillRect(trash.x, trash.y, trash.width, trash.height);
+    if (trashImage.complete) {
+        ctxGame.drawImage(trashImage, trash.x, trash.y, trash.width, trash.height);
+    } else {
+        trashImage.onload = () => {
+            ctxGame.drawImage(trashImage, trash.x, trash.y, trash.width, trash.height);
+        };
+    }
 }
+const trashImage = new Image();
+trashImage.src = 'assets/Bouteille.png'; 
 
 // 🔫 Dessiner les tirs
 function drawShots() {
@@ -212,3 +213,6 @@ function resetGame() {
     gameCanvas.style.display = 'none';
     menu.style.display = 'flex';
 }
+
+
+ 
