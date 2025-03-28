@@ -51,14 +51,15 @@ const dialogue = [
 
 let dialogueIndex = 0;
 
-// Play music when the user clicks "Start"
 startButton.addEventListener('click', () => {
-    menuMusic.volume = 0.5;
-    menuMusic.play().catch(error => console.log("Music autoplay blocked:", error));
+    menuMusic.volume = 0.5; // Set volume
+    menuMusic.loop = true;  // Enable looping
+    menuMusic.play().catch(error => console.log("Music autoplay blocked:", error)); // Handle autoplay errors
     menu.style.display = 'none';
     intro.style.display = 'block';
     showDialogue();
 });
+
 
 nextButton.addEventListener('click', () => {
     dialogueIndex++;
